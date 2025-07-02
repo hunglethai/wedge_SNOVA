@@ -1,0 +1,141 @@
+//////////////////////////////////////////////////////////////////////
+//  Parameters and finite field                                     //
+//////////////////////////////////////////////////////////////////////
+n := 10;                // ambient dimension      (n ≥ k+2)
+k := 6;                 // # unknown vectors      (dim of vinegar space)
+m := 4;                 // # alternating matrices (eqs)
+q := 2;                 // field size  (may be any prime-power)
+F := GF(q);
+
+seed := 20250615;
+SetSeed(seed);          // reproducible randomness
+
+//////////////////////////////////////////////////////////////////////
+//  1.  Plücker coordinate set-up                                   //
+//////////////////////////////////////////////////////////////////////
+PluckerSets := SetToSequence( Subsets({0..n-1}, k) );  
+
+numP        := #PluckerSets;
+P<[X]> := PolynomialRing(F, numP);
+
+/* Helper: given a k-subset S (as a *set*), return its polynomial   */
+/*         variable X[idx] where idx = position of S in PluckerSets */
+function PV(S)
+    return X[Index(PluckerSets, S)];
+end function;
+
+/*  Given a k-subset S (as a set), return its corresponding
+    Plücker indeterminate  X[idx]  where
+          idx = position of S in PluckerSets                    */
+function PV(S)
+    return X[Index(PluckerSets, S)];
+end function;
+
+
+//////////////////////////////////////////////////////////////////////
+//  2.  Generate full-rank random alternating matrices              //
+//////////////////////////////////////////////////////////////////////
+function RandomFullRankAlternatingMatrices(d, howmany, K)
+    mats := [];
+    while #mats lt howmany do
+        A := ZeroMatrix(K, d, d);
+        for i in [1..d] do
+            for j in [i+1..d] do
+                v := Random(K);
+                A[i][j] := v;
+                A[j][i] := -v;
+            end for;
+        end for;
+        if Rank(A) eq d then
+            Append(~mats, A);
+        end if;
+    end while;
+    return mats;
+end function;
+
+Qlist := RandomFullRankAlternatingMatrices(n, m, F);
+
+//////////////////////////////////////////////////////////////////////
+//  3.  Build the linear relations (exterior-algebra equations)     //
+//////////////////////////////////////////////////////////////////////
+eqns := [];
+Kplus2Sets := SetToSequence( Subsets({0..n-1}, k+2) );
+
+for Q in Qlist do
+    for Jset in Kplus2Sets do
+        J := Setseq(Jset);     // ordered list
+        lin := P!0;
+        for t in [1..#J-1] do
+            for u in [t+1..#J] do
+                a := J[t];
+                b := J[u];
+
+                // form I = J \ {a,b}
+                I := { J[s] : s in [1..#J] | s ne t and s ne u };
+
+                // sign  (-1)^{(#indices strictly between a and b)}  mod 2
+                sgn := (-1)^( (u - t - 1) mod 2 );
+
+                lin +:= F!sgn * Q[a+1][b+1] * PV(I); 
+            end for;
+        end for;
+        Append(~eqns, lin);
+    end for;
+end for;
+
+printf "[info] Built %o linear relations in %o Plücker variables (= binom(%o,%o) = %o)\n",
+        #eqns, numP, n, k, Binomial(n,k);
+
+printf "Generated %o random skew-symmetric full-rank matrices Q_1,…,Q_%o (n=%o)\n",
+        m, m, n;
+
+//////////////////////////////////////////////////////////////////////
+//  4.  Construct the Macaulay (coefficient) matrix                 //
+//////////////////////////////////////////////////////////////////////
+rows := #eqns;  cols := numP;
+Mcoeff := ZeroMatrix(F, rows, cols);
+
+// map variable -> column index (already have PluckerVar)
+VarPos := AssociativeArray();
+for j in [1..numP] do
+    VarPos[ X[j] ] := j;          // key is the polynomial variable itself
+end for;
+
+for i in [1..rows] do
+    mons := Monomials(eqns[i]);
+    coeffs := Coefficients(eqns[i]);          // same ordering as mons
+    for t in [1..#mons] do
+        mon := mons[t];
+        if mon eq 1 then
+            continue;                         // skip constant term
+        end if;
+        j := VarPos[ mon ];                   // column index
+        Mcoeff[i][j] := coeffs[t];            // coefficient
+    end for;
+end for;
+
+
+//////////////////////////////////////////////////////////////////////
+//  5.  Rank computation (sparse)                                   //
+//////////////////////////////////////////////////////////////////////
+rank := Rank(SparseMatrix(Mcoeff));
+printf "[result] Rank of the linear system = %o\n", rank;
+
+//////////////////////////////////////////////////////////////////////
+//  6.  Compare with the theoretical SupportMinors formula          //
+//////////////////////////////////////////////////////////////////////
+function RankHypothesis(m, v, o)
+    total := [];
+    upp   := o div 2;
+    S     := 0;
+    for i in [0..upp] do
+        term := (-1)^i * Binomial(m + i - 1, i) * Binomial(v + o, v + 2*i);
+        S +:= term;
+        Append(~total, <i, S>);
+    end for;
+    return total;
+end function;
+
+printf "\nv+o = %o, v = %o, m = %o\n", n, k, m;
+printf "Rank hypothesis (cumulative by i):\n";
+print RankHypothesis(m, k, n-k);

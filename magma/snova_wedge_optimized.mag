@@ -1,0 +1,222 @@
+/* ------------------------- PARAMETERS -------------------------------- */
+l := 2;              // extension degree (ℓ)
+n := 4;              // ambient dimension,  n ≥ k+2
+k := 2;              // # unknown vectors v_1,…,v_k
+m := 16;              // # alternating matrices Q_i
+q := 16;             // base field size = 2^4
+F := GF(q);
+SetSeed(20250615);
+
+/* --- bit-mask helper:  [a1,a2,…]  ↦  Σ 2^(ai-1) -------------------- */
+function Mask(seq)
+    s := 0;
+    for i in seq do
+        s +:= 2^(i-1);
+    end for;
+    return s;
+end function;
+
+
+/* ----------------- RANDOM MATRIX FUNCTIONS AND TOOLS -------------------- */
+function RandomSymmetricMatrix(F, l)
+    M := Random(MatrixAlgebra(F, l));
+    return M + Transpose(M) - DiagonalMatrix([M[i][i] : i in [1..l]]);
+end function;
+
+function RandomSkewMatrix(FS, n)
+    A := Random(MatrixAlgebra(FS, n));
+    return A - Transpose(A);
+end function;
+
+/* ---------------- CONSTRUCT THE IRREDUCIBLE POLYNOMIAL --------------- */
+repeat
+    S := RandomSymmetricMatrix(F, l);
+until IsIrreducible(CharacteristicPolynomial(S));
+K<x> := PolynomialRing(F);
+f    := CharacteristicPolynomial(S);
+F_S<s> := ext< F | f >;
+Embed := hom< F_S -> MatrixAlgebra(F, l) | s :-> S >;
+
+/* ------------------------ POLYNOMIAL RING ---------------------------- */
+names := [ Sprintf("x%o%o%o", r, i, j) :
+           r in [0..k-1], i in [0..n-1], j in [0..l-1] ];
+R := PolynomialRing(F, #names);
+AssignNames(~R, names);
+
+function Var(r, i, j)
+    return R.( (r*n + i)*l + j + 1 );
+end function;
+
+/* ----------------------- BUILD THE BLOCK MATRIX X -------------------- */
+function BuildX()
+    blocks := [* *];
+    for r in [0..k-1] do
+        for i in [0..n-1] do
+            Append(~blocks, DiagonalMatrix(R, [Var(r, i, j) : j in [0..l-1]]));
+        end for;
+    end for;
+    nested := [ [ blocks[(r-1)*n + c] : c in [1..n] ] : r in [1..k] ];
+    return BlockMatrix(nested);
+end function;
+
+X := BuildX();
+
+/* -------------- RANDOM SKEW MATRICES AND THEIR LIFTS ----------------- */
+function LiftMatrix(A, phi)
+    return BlockMatrix([ [ phi(A[i][j]) : j in [1..Ncols(A)] ] :
+                         i in [1..Nrows(A)] ]);
+end function;
+
+Q_list := [ LiftMatrix(RandomSkewMatrix(F_S, n), Embed) : t in [1..m] ];
+
+/* ------------------- CACHE OF SUB‑DETERMINANTS ----------------------- */
+/* ===================================================================== */
+/*  SMALL  MACAULAY  MATRIX   (linearised in the minors)                 */
+/* ===================================================================== */
+
+/* helper: encode a subset {i1,…,it} ⊂ {1,…,nℓ} by the bit mask     */
+/*           Σ 2^(ij-1).  A plain integer is a perfect dictionary   */
+/*           key – same type everywhere, no coercion issues.        */
+function Mask(seq)
+    return &+ [ 2^(i-1) : i in seq ];
+end function;
+
+/* -------- parameters and dictionaries -------------------------- */
+KL := k*l;       NL := n*l;
+
+PluckerSubs := Subsets({1..NL}, KL);          // all (kℓ)-subsets
+numVars := #PluckerSubs;
+
+varIndex := AssociativeArray();               // mask  →  column #
+col := 0;
+for I in PluckerSubs do
+    col +:= 1;
+    varIndex[ Mask(SetToSequence(I)) ] := col;
+end for;
+
+/* -------- rows: every (kℓ+2)-subset for every Q_r --------------- */
+Js      := Subsets({1..NL}, KL + 2);
+numRows := m * #Js;
+
+/* -------- build sparse coordinate list ------------------------- */
+coords := [];          // will hold <row, col, value>
+row    := 0;
+
+for QQ in Q_list do
+    for J in Js do
+        row +:= 1;
+        Jseq := SetToSequence(J);
+
+        /* collect coefficients of this *row*                       */
+        rowCoeffs := AssociativeArray(F);
+
+        for t1 in [1..#Jseq-1] do
+            for t2 in [t1+1..#Jseq] do
+                a := Jseq[t1];    b := Jseq[t2];
+
+                /* sign from wedge ordering                          */
+                sign := ( ((t2-t1-1) mod 2) eq 0 ) select F!1 else -F!1;
+
+                Iseq  := [ x : x in Jseq | x ne a and x ne b ];
+                colID := varIndex[ Mask(Iseq) ];             // integer ≥ 1
+                coeff := sign * QQ[a][b];
+
+                if IsDefined(rowCoeffs, colID) then
+                    rowCoeffs[colID] +:= coeff;
+                else
+                    rowCoeffs[colID] :=  coeff;
+                end if;
+            end for;
+        end for;
+
+        /* flush non-zero entries of this row into global coords      */
+        for colID in Keys(rowCoeffs) do
+            val := F!rowCoeffs[colID];          // coerce into the field
+            if val ne F!0 then
+                Append(~coords, < Integers()!row, Integers()!colID, val >);
+            end if;
+        end for;
+    end for;
+end for;
+
+/* -------- sparse matrix & rank --------------------------------- */
+M     := SparseMatrix(F, numRows, numVars, coords);
+rank  := Rank(M);
+print Sprintf("Optimised Macaulay matrix  %o × %o   rank %o",
+              numRows, numVars, rank);
+
+/* ------------- HELPER: ALL INT VECTORS WITHOUT MEMO ------------------ */
+function AllIntVectors(N, ell)
+    if ell eq 1 then
+        return [ [N] ];
+    end if;
+    res := [];
+    for a in [0..N] do
+        for tail in AllIntVectors(N-a, ell-1) do
+            Append(~res, [a] cat tail);
+        end for;
+    end for;
+    return res;
+end function;
+
+/* ----------------------- HYPOTHESIS CHECKS --------------------------- */
+function ComputeSum1(m, v, o, ell)
+    totals := []; total := 0;
+    for i in [0..Floor(o*ell/2)] do
+        coeff := (-1)^i * Binomial(m*ell + i - 1, i);
+        inner := &+[ &*[Binomial(v+o, v+a) : a in vec] :
+                     vec in AllIntVectors(2*i, ell) ];
+        total +:= coeff * inner;
+        Append(~totals, <i,total>);
+    end for;
+    return totals;
+end function;
+
+function ComputeSum2(m, v, o, ell)
+    upper := Floor(o/2);
+    grouped := AssociativeArray();
+    for vec in CartesianPower({0..upper}, ell) do
+        I := &+[x : x in vec];
+        term := (-1)^I * &*[ Binomial(m + vec[j] - 1, vec[j]) *
+                              Binomial(v+o, v + 2*vec[j]) : j in [1..ell] ];
+        grouped[I] := (I in Keys(grouped) select grouped[I] else 0) + term;
+    end for;
+    totals := []; running := 0;
+    for I in Sort([k : k in Keys(grouped)]) do
+        running +:= grouped[I];
+        Append(~totals, <I,running>);
+    end for;
+    return totals;
+end function;
+
+function Match(tuples, target)
+    for t in tuples do
+        if t[2] eq target then
+            return true, t;
+        end if;
+    end for;
+    return false, <0,0>;
+end function;
+
+/* ----------------------------- OUTPUT -------------------------------- */
+print Sprintf("Field extension constructed over GF(%o) of degree %o", q, l);
+print Sprintf("Macaulay matrix has %o rows × %o columns (rank %o)", Nrows(M), Ncols(M), rank);
+
+v := k;  o := n-k;
+h1 := ComputeSum1(m, v, o, l);
+h2 := ComputeSum2(m, v, o, l);
+found1, match1 := Match(h1, rank);
+found2, match2 := Match(h2, rank);
+
+case true:
+when found1 and not found2:
+    print Sprintf("Hypothesis 1 verified:  i = %o  → rank", match1[1]);
+when found2 and not found1:
+    print Sprintf("Hypothesis 2 verified:  I = %o  → rank", match2[1]);
+when found1 and found2:
+    print "Both hypotheses verified:";
+    print Sprintf("  • Hyp 1: i = %o", match1[1]);
+    print Sprintf("  • Hyp 2: I = %o", match2[1]);
+else:
+    print "Neither hypothesis matched the computed rank.";
+end case;
