@@ -1,11 +1,21 @@
 /* ------------------------- PARAMETERS -------------------------------- */
 l := 2;              // extension degree (ℓ)
-n := 6;              // ambient dimension,  n ≥ k+2
+n := 4;              // ambient dimension,  n ≥ k+2
 k := 2;              // # unknown vectors v_1,…,v_k
 m := 16;              // # alternating matrices Q_i
 q := 16;             // base field size = 2^4
 F := GF(q);
 SetSeed(20250615);
+
+/* --- bit-mask helper:  [a1,a2,…]  ↦  Σ 2^(ai-1) -------------------- */
+function Mask(seq)
+    s := 0;
+    for i in seq do
+        s +:= 2^(i-1);
+    end for;
+    return s;
+end function;
+
 
 /* ----------------- RANDOM MATRIX FACTORY ROUTINES -------------------- */
 function RandomSymmetricMatrix(F, l)
@@ -60,64 +70,80 @@ end function;
 Q_list := [ LiftMatrix(RandomSkewMatrix(F_S, n), Embed) : t in [1..m] ];
 
 /* ------------------- CACHE OF SUB‑DETERMINANTS ----------------------- */
-rowIdx := [1..k*l];
+/* ===================================================================== */
+/*  SMALL  MACAULAY  MATRIX   (linearised in the minors)                 */
+/* ===================================================================== */
 
-function ComputeMinors(X)
-    minors := AssociativeArray();
-    for I in Subsets({1..n*l}, k*l) do
-        minors[I] := Determinant(Submatrix(X, rowIdx, SetToSequence(I)));
-    end for;
-    return minors;
+/* helper: encode a subset {i1,…,it} ⊂ {1,…,nℓ} by the bit mask     */
+/*           Σ 2^(ij-1).  A plain integer is a perfect dictionary   */
+/*           key – same type everywhere, no coercion issues.        */
+function Mask(seq)
+    return &+ [ 2^(i-1) : i in seq ];
 end function;
 
-minors := ComputeMinors(X);
+/* -------- parameters and dictionaries -------------------------- */
+KL := k*l;       NL := n*l;
 
-/* -------------------- BUILD QUADRATIC EQUATIONS ---------------------- */
-function BuildEquations(Q_list, minors)
-    eqns := [];
-    Js := Subsets({1..n*l}, k*l+2);
-    for QQ in Q_list do
-        for J in Js do
-            Jseq := SetToSequence(J);
-            coeff := R!0;
-            for t1 in [1..#Jseq-1] do
-                for t2 in [t1+1..#Jseq] do
-                    a := Jseq[t1];
-                    b := Jseq[t2];
-                    sign := (-1)^(t2 - t1 - 1);
-                    I := Sort([x : x in Jseq | x ne a and x ne b]);
-                    coeff +:= sign * QQ[a][b] * minors[SequenceToSet(I)];
-                end for;
+PluckerSubs := Subsets({1..NL}, KL);          // all (kℓ)-subsets
+numVars := #PluckerSubs;
+
+varIndex := AssociativeArray();               // mask  →  column #
+col := 0;
+for I in PluckerSubs do
+    col +:= 1;
+    varIndex[ Mask(SetToSequence(I)) ] := col;
+end for;
+
+/* -------- rows: every (kℓ+2)-subset for every Q_r --------------- */
+Js      := Subsets({1..NL}, KL + 2);
+numRows := m * #Js;
+
+/* -------- build sparse coordinate list ------------------------- */
+coords := [];          // will hold <row, col, value>
+row    := 0;
+
+for QQ in Q_list do
+    for J in Js do
+        row +:= 1;
+        Jseq := SetToSequence(J);
+
+        /* collect coefficients of this *row*                       */
+        rowCoeffs := AssociativeArray(F);
+
+        for t1 in [1..#Jseq-1] do
+            for t2 in [t1+1..#Jseq] do
+                a := Jseq[t1];    b := Jseq[t2];
+
+                /* sign from wedge ordering                          */
+                sign := ( ((t2-t1-1) mod 2) eq 0 ) select F!1 else -F!1;
+
+                Iseq  := [ x : x in Jseq | x ne a and x ne b ];
+                colID := varIndex[ Mask(Iseq) ];             // integer ≥ 1
+                coeff := sign * QQ[a][b];
+
+                if IsDefined(rowCoeffs, colID) then
+                    rowCoeffs[colID] +:= coeff;
+                else
+                    rowCoeffs[colID] :=  coeff;
+                end if;
             end for;
-            Append(~eqns, coeff);
+        end for;
+
+        /* flush non-zero entries of this row into global coords      */
+        for colID in Keys(rowCoeffs) do
+            val := F!rowCoeffs[colID];          // coerce into the field
+            if val ne F!0 then
+                Append(~coords, < Integers()!row, Integers()!colID, val >);
+            end if;
         end for;
     end for;
-    return eqns;
-end function;
-
-eqns := BuildEquations(Q_list, minors);
-
-/* ----------------- CONSTRUCT SPARSE MACAULAY MATRIX ------------------ */
-d := k*l;
-monomials := MonomialsOfDegree(R, d);
-mon_index := AssociativeArray( Universe(monomials) );
-for i in [1..#monomials] do
-    mon_index[monomials[i]] := i;
 end for;
 
-coords := [];
-row := 0;
-for poly in eqns do
-    row +:= 1;
-    cs := Coefficients(poly);
-    mons := Monomials(poly);
-    for t in [1..#mons] do
-        Append(~coords, <row, mon_index[mons[t]], cs[t]>);
-    end for;
-end for;
-
-M := SparseMatrix(F, #eqns, #monomials, coords);
-rank := Rank(M);
+/* -------- sparse matrix & rank --------------------------------- */
+M     := SparseMatrix(F, numRows, numVars, coords);
+rank  := Rank(M);
+print Sprintf("Optimised Macaulay matrix  %o × %o   rank %o",
+              numRows, numVars, rank);
 
 /* ------------- HELPER: ALL INT VECTORS WITHOUT MEMO ------------------ */
 function AllIntVectors(N, ell)
@@ -174,8 +200,6 @@ end function;
 
 /* ----------------------------- OUTPUT -------------------------------- */
 print Sprintf("Field extension constructed over GF(%o) of degree %o", q, l);
-print "\nv+o =", n, "v =", k, "m =", m, "l =", l;
-printf "Plücker variables (= binom(%o,%o)^2 = %o)\n", n, k, Binomial(n,k)^2;
 print Sprintf("Macaulay matrix has %o rows × %o columns (rank %o)", Nrows(M), Ncols(M), rank);
 
 v := k;  o := n-k;
