@@ -1,0 +1,83 @@
+//////////////////////////////////////////////////////////////////////
+//  Parameters                                                      //
+//////////////////////////////////////////////////////////////////////
+n := 12;              k := 8;      m := 3;
+F := GF(4);           SetSeed(20250615);
+
+//////////////////////////////////////////////////////////////////////
+//  1.  Plücker coordinates                                         //
+//////////////////////////////////////////////////////////////////////
+PluckerSets := SetToSequence(Subsets({0..n-1}, k));
+P<[X]>      := PolynomialRing(F, #PluckerSets);
+PV := func<S | X[Index(PluckerSets, S)]>;            // k-subset → variable
+
+//////////////////////////////////////////////////////////////////////
+//  2.  Random full-rank alternating matrices                       //
+//////////////////////////////////////////////////////////////////////
+function RandAltFullRank(d, K)
+  repeat
+    A := ZeroMatrix(K, d, d);
+    for i in [1..d-1] do
+      for j in [i+1..d] do
+        v := Random(K);
+        A[i][j] := v;  A[j][i] := -v;
+      end for;
+    end for;
+  until Rank(A) eq d;
+  return A;
+end function;
+
+Qlist := [ RandAltFullRank(n, F) : i in [1..m] ];
+
+//////////////////////////////////////////////////////////////////////
+//  3.  Exterior-algebra equations                                  //
+//////////////////////////////////////////////////////////////////////
+eqns := [];
+for Q in Qlist do
+  for Jset in Subsets({0..n-1}, k+2) do
+    J   := Setseq(Jset);
+    lin := P!0;
+    for t in [1..#J-1] do
+      for u in [t+1..#J] do
+        sgn := (-1)^((u-t-1) mod 2);
+        I   := { J[s] : s in [1..#J] | s ne t and s ne u };
+        lin +:= sgn * Q[J[t]+1][J[u]+1] * PV(I);
+      end for;
+    end for;
+    Append(~eqns, lin);
+  end for;
+end for;
+
+//////////////////////////////////////////////////////////////////////
+//  4.  Macaulay coefficient matrix                                 //
+//////////////////////////////////////////////////////////////////////
+rows := #eqns;  cols := #PluckerSets;
+Mcoeff := ZeroMatrix(F, rows, cols);
+
+VarPos := AssociativeArray();                   // var → column
+for j in [1..cols] do VarPos[X[j]] := j; end for;
+
+for i in [1..rows] do
+  mons, coeffs := Explode([Monomials(eqns[i]), Coefficients(eqns[i])]);
+  for t in [1..#mons] do
+    if mons[t] eq 1 then continue; end if;      // skip constant term
+    Mcoeff[i][ VarPos[mons[t]] ] := coeffs[t];
+  end for;
+end for;
+
+//////////////////////////////////////////////////////////////////////
+//  5.  Hypothesised rank formula                                 //
+//////////////////////////////////////////////////////////////////////
+
+RankHyp := func<m,v,o | [ <i, (&+[ (-1)^j * Binomial(m+j-1,j) *
+                                   Binomial(v+o, v+2*j)
+                                   : j in [0..i] ])>
+                         : i in [0..o div 2] ]>;
+
+rank := RankHyp(m,k,n-k);
+
+print "\nv+o =", n, "v =", k, "m =", m;
+printf "[info] Built %o linear relations in %o Plücker variables (= binom(%o,%o) = %o)\n",
+        #eqns, cols, n, k, Binomial(n,k);
+printf "Computed Rank = %o\n", Rank(SparseMatrix(Mcoeff));
+print "Rank hypothesis : ", cols - rank[#rank][2];
