@@ -216,3 +216,29 @@ Hypothesis 3: (Hung's formula)
 [ <0, 0>, <1, 180>, <2, 170>, <3, 170> ]
 Hypothesis 4: (plain UOV formula)
 [ 0, 180, 170 ]
+
+[params]  v+o = 10,  v = 6,  m = 6,  l = 1
+210 / 210 minors are non‑zero
+Generated 270 equations
+Rank(M) = 209  (size 270 × 151200); non-zero rows = 270 (expected = 270) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 270>, <2, 249>, <3, 249> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 270>, <2, 249>, <3, 249> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 270>, <2, 249>, <3, 249> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 270, 249 ]
+
+[params]  v+o = 10,  v = 7,  m = 5,  l = 1
+120 / 120 minors are non‑zero
+Generated 50 equations
+Rank(M) = 50  (size 50 × 604800); non-zero rows = 50 (expected = 50) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 50>, <2, 50> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 50>, <2, 50> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 50>, <2, 50> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 50 ]
