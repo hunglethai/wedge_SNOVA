@@ -135,3 +135,84 @@ Hypothesis 3: (Hung's formula)
 [ <0, 0>, <1, 0>, <2, 0>, <3, 0>, <4, 0> ]
 Hypothesis 4: (plain UOV formula)
 [ 0, 7680, 5600 ]
+
+[params]  v+o = 4,  v = 2,  m = 3,  l = 3
+216 / 924 minors are non‑zero
+Generated 13365 equations
+Rank(M) = 216  (size 13365 × 1728); non-zero columns = 10674 (expected = 10692)
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 10692>, <2, -14256>, <3, -10602>, <4, -10602> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 1188>, <2, 792>, <3, 802>, <4, 802> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 324>, <2, 162>, <3, 189>, <4, 189>, <5, 189>, <6, 189> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 13365, -11583, -7929 ]
+
+
+[params]  v+o = 4,  v = 3,  m = 3,  l = 3
+64 / 220 minors are non‑zero
+Generated 324 equations
+Rank(M) = 64  (size 324 × 13824); non-zero columns = 324 (expected = 324) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 324>, <2, 324> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 36>, <2, 36> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 0>, <2, 0>, <3, 0> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 324 ]
+
+
+[params]  v+o = 4,  v = 3,  m = 4,  l = 3
+64 / 220 minors are non‑zero
+Generated 432 equations
+Rank(M) = 64  (size 432 × 13824); non-zero columns = 432 (expected = 432) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 432>, <2, 432> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 48>, <2, 48> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 0>, <2, 0>, <3, 0> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 432 ]
+
+
+[params]  v+o = 4,  v = 3,  m = 4,  l = 4
+256 / 1820 minors are non‑zero
+Generated 7680 equations
+Rank(M) = 256  (size 7680 × 331776); non-zero columns = 6144 (expected = 6144) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 6144>, <2, 4064>, <3, 4064> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 384>, <2, 374>, <3, 374> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 0>, <2, 0>, <3, 0>, <4, 0> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 7680, 5600 ]
+
+[params]  v+o = 7,  v = 4,  m = 1,  l = 2
+1225 / 3003 minors are non‑zero
+Generated 4004 equations
+Rank(M) = 1225  (size 4004 × 705600); non-zero rows = 3724 (expected = 3724) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 3724>, <2, 2814>, <3, 2834>, <4, 2834> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 931>, <2, 840>, <3, 841>, <4, 841> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 490>, <2, 441>, <3, 441>, <4, 441> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 4004, 3094, 3114 ]
+
+[params]  v+o = 10,  v = 6,  m = 4,  l = 1
+210 / 210 minors are non‑zero
+Generated 180 equations
+Rank(M) = 170  (size 180 × 151200); non-zero rows = 180 (expected = 180) 
+Hypothesis 1 (Ray's l-scaled formula):
+[ <0, 0>, <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 2: (Ray's no-l formula)
+[ <0, 0>, <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 3: (Hung's formula)
+[ <0, 0>, <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 4: (plain UOV formula)
+[ 0, 180, 170 ]
