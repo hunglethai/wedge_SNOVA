@@ -1,0 +1,130 @@
+[params]  v+o = 6,  v = 3,  m = 2,  l = 1
+20 / 20 minors are non‑zero
+Generated 12 equations
+Rank(M) = 12  (size 12 × 120); non-zero rows = 12 (expected = 12), non-zero cols = NA; duplicated rows = 0, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 12>, <2, 12> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 12>, <2, 12> ]
+Hypothesis 3 (plain UOV formula): [ 0, 12 ]
+
+[params]  v+o = 8,  v = 5,  m = 6,  l = 1
+56 / 56 minors are non‑zero
+Generated 48 equations
+Rank(M) = 48  (size 48 × 6720); non-zero rows = 48 (expected = 48), non-zero cols = NA; duplicated rows = 0, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 48>, <2, 48> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 48>, <2, 48> ]
+Hypothesis 3 (plain UOV formula): [ 0, 48 ]
+
+[params]  v+o = 10,  v = 6,  m = 4,  l = 1
+210 / 210 minors are non‑zero
+Generated 180 equations
+Rank(M) = 170  (size 180 × 151200); non-zero rows = 180 (expected = 180), non-zero cols = NA; duplicated rows = 0, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 3 (plain UOV formula): [ 0, 180, 170 ]
+
+Loading file "snova.mag"
+[params]  v+o = 11,  v = 6,  m = 5,  l = 1
+462 / 462 minors are non‑zero
+Generated 825 equations
+Rank(M) = 461  (size 825 × 332640); non-zero rows = 825 (expected = 825), non-zero cols = NA; duplicated rows = 0, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 825>, <2, 660>, <3, 660> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 825>, <2, 660>, <3, 660> ]
+Hypothesis 3 (plain UOV formula): [ 0, 825, 660 ]
+
+[params]  v+o = 10,  v = 7,  m = 4,  l = 1
+120 / 120 minors are non‑zero
+Generated 40 equations
+Rank(M) = 40  (size 40 × 604800); non-zero rows = 40 (expected = 40), non-zero cols = NA; duplicated rows = 0, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 40>, <2, 40> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 40>, <2, 40> ]
+Hypothesis 3 (plain UOV formula): [ 0, 40 ]
+
+[params]  v+o = 10,  v = 7,  m = 5,  l = 1
+120 / 120 minors are non‑zero
+Generated 50 equations
+Rank(M) = 50  (size 50 × 604800); non-zero rows = 50 (expected = 50), non-zero cols = NA; duplicated rows = 0, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 50>, <2, 50> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 50>, <2, 50> ]
+Hypothesis 3 (plain UOV formula): [ 0, 50 ]
+
+/////////////////////////////////////////////////////SNOVA//////////////////////////////////////////////////////
+
+[params]  v+o = 6,  v = 4,  m = 1,  l = 2
+225 / 495 minors are non‑zero
+Generated 264 equations
+Rank(M) = 98  (size 264 × 129600); non-zero rows = 264 (expected = 264), non-zero cols = NA; duplicated rows = 30, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 132>, <2, 129>, <3, 129> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 66>, <2, 65>, <3, 65> ]
+Hypothesis 3 (plain UOV formula): [ 0, 264, 254 ]
+
+[params]  v+o = 6,  v = 4,  m = 2,  l = 2
+225 / 495 minors are non‑zero
+Generated 528 equations
+Rank(M) = 190  (size 528 × 129600); non-zero rows = 528 (expected = 528), non-zero cols = NA; duplicated rows = 132, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 264>, <2, 254>, <3, 254> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 132>, <2, 129>, <3, 129> ]
+Hypothesis 3 (plain UOV formula): [ 0, 528, 492 ]
+
+[params]  v+o = 6,  v = 3,  m = 3,  l = 2
+400 / 924 minors are non‑zero
+Generated 5940 equations
+Rank(M) = 400  (size 5940 × 14400); non-zero rows = 5580 (expected = 5580), non-zero cols = NA; duplicated rows = 1079, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 2790>, <2, 1404>, <3, 1460>, <4, 1460> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 1395>, <2, 999>, <3, 1009>, <4, 1009> ]
+Hypothesis 3 (plain UOV formula): [ 0, 5940, 792, 1156 ]
+
+[params]  v+o = 5,  v = 3,  m = 1,  l = 2
+100 / 210 minors are non‑zero
+Generated 180 equations
+Rank(M) = 66  (size 180 × 3600); non-zero rows = 180 (expected = 180), non-zero cols = NA; duplicated rows = 20, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 90>, <2, 87>, <3, 87> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 45>, <2, 44>, <3, 44> ]
+Hypothesis 3 (plain UOV formula): [ 0, 180, 170 ]
+
+[params]  v+o = 5,  v = 3,  m = 2,  l = 2
+100 / 210 minors are non‑zero
+Generated 360 equations
+Rank(M) = 100  (size 360 × 3600); non-zero rows = 360 (expected = 360), non-zero cols = NA; duplicated rows = 40, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 90>, <2, 87>, <3, 87> ]
+Hypothesis 3 (plain UOV formula): [ 0, 360, 324 ]
+
+[params]  v+o = 5,  v = 3,  m = 3,  l = 2
+100 / 210 minors are non‑zero
+Generated 540 equations
+Rank(M) = 100  (size 540 × 3600); non-zero rows = 540 (expected = 540), non-zero cols = NA; duplicated rows = 60, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 270>, <2, 249>, <3, 249> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 135>, <2, 129>, <3, 129> ]
+Hypothesis 3 (plain UOV formula): [ 0, 540, 462 ]
+
+[params]  v+o = 5,  v = 3,  m = 4,  l = 2
+100 / 210 minors are non‑zero
+Generated 720 equations
+Rank(M) = 100  (size 720 × 3600); non-zero rows = 720 (expected = 720), non-zero cols = NA; duplicated rows = 80, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 360>, <2, 324>, <3, 324> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 180>, <2, 170>, <3, 170> ]
+Hypothesis 3 (plain UOV formula): [ 0, 720, 584 ]
+
+[params]  v+o = 6,  v = 3,  m = 1,  l = 2
+400 / 924 minors are non‑zero
+Generated 1980 equations
+Rank(M) = 400  (size 1980 × 14400); non-zero rows = 1860 (expected = 1860), non-zero cols = NA; duplicated rows = 359, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 930>, <2, 732>, <3, 736>, <4, 736> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 465>, <2, 399>, <3, 400>, <4, 400> ]
+Hypothesis 3 (plain UOV formula): [ 0, 1980, 1320, 1340 ]
+
+[params]  v+o = 6,  v = 3,  m = 2,  l = 2
+400 / 924 minors are non‑zero
+Generated 3960 equations
+Rank(M) = 400  (size 3960 × 14400); non-zero rows = 3720 (expected = 3720), non-zero cols = NA; duplicated rows = 719, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 1860>, <2, 1200>, <3, 1220>, <4, 1220> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 930>, <2, 732>, <3, 736>, <4, 736> ]
+Hypothesis 3 (plain UOV formula): [ 0, 3960, 1584, 1704 ]
+
+[params]  v+o = 6,  v = 3,  m = 3,  l = 2
+400 / 924 minors are non‑zero
+Generated 5940 equations
+Rank(M) = 400  (size 5940 × 14400); non-zero rows = 5580 (expected = 5580), non-zero cols = NA; duplicated rows = 1079, duplicated cols = NA 
+Hypothesis 1 (Ray's l-scaled formula): [ <1, 2790>, <2, 1404>, <3, 1460>, <4, 1460> ]
+Hypothesis 2 (Ray's no-l formula): [ <1, 1395>, <2, 999>, <3, 1009>, <4, 1009> ]
+Hypothesis 3 (plain UOV formula): [ 0, 5940, 792, 1156 ]
