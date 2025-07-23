@@ -1,0 +1,136 @@
+Magma V2.28-23    Wed Jul 23 2025 15:13:43 on wf123    [Seed = 452104826]
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "params.mag"
+
+[params]  v+o = 54,  v = 37,  m = 17,  l = 2
+Number of variables : 90.84 vs Number of equations: 96.11 
+Hypothesis 1 (Ray's l-scaled formula): 90.90
+
+[params]  v+o = 33,  v = 25,  m = 8,  l = 3
+Number of variables : 71.18 vs Number of equations: 76.42 
+Hypothesis 1 (Ray's l-scaled formula): 70.60
+
+[params]  v+o = 29,  v = 24,  m = 5,  l = 4
+Number of variables : 67.43 vs Number of equations: 72.29 
+Hypothesis 1 (Ray's l-scaled formula): 68.69
+
+[params]  v+o = 81,  v = 56,  m = 25,  l = 2
+Number of variables : 137.67 vs Number of equations: 143.46 
+Hypothesis 1 (Ray's l-scaled formula): 137.66
+
+[params]  v+o = 60,  v = 49,  m = 11,  l = 3
+Number of variables : 114.95 vs Number of equations: 119.72 
+Hypothesis 1 (Ray's l-scaled formula): 115.49
+
+[params]  v+o = 45,  v = 37,  m = 8,  l = 4
+Number of variables : 110.73 vs Number of equations: 116.47 
+Hypothesis 1 (Ray's l-scaled formula): 110.23
+
+[params]  v+o = 29,  v = 24,  m = 5,  l = 5
+Number of variables : 84.29 vs Number of equations: 90.40 
+Hypothesis 1 (Ray's l-scaled formula): 83.85
+
+[params]  v+o = 108,  v = 75,  m = 33,  l = 2
+Number of variables : 184.62 vs Number of equations: 190.81 
+Hypothesis 1 (Ray's l-scaled formula): 184.63
+
+[params]  v+o = 81,  v = 66,  m = 15,  l = 3
+Number of variables : 158.56 vs Number of equations: 163.85 
+Hypothesis 1 (Ray's l-scaled formula): 158.33
+
+[params]  v+o = 70,  v = 60,  m = 10,  l = 4
+Number of variables : 154.12 vs Number of equations: 159.48 
+Hypothesis 1 (Ray's l-scaled formula): 154.69
+
+[params]  v+o = 14,  v = 9,  m = 5,  l = 2
+Number of variables : 21.93 vs Number of equations: 25.55 
+Hypothesis 1 (Ray's l-scaled formula): 23.01
+
+[params]  v+o = 12,  v = 8,  m = 4,  l = 2
+Number of variables : 17.90 vs Number of equations: 20.80 
+Hypothesis 1 (Ray's l-scaled formula): 19.10
+
+[params]  v+o = 5,  v = 3,  m = 2,  l = 2
+Number of variables : 6.64 vs Number of equations: 8.49 
+Hypothesis 1 (Ray's l-scaled formula): 7.41
+
+[params]  v+o = 9,  v = 7,  m = 2,  l = 2
+Number of variables : 10.34 vs Number of equations: 10.26 
+Hypothesis 1 (Ray's l-scaled formula): 9.23
+
+[params]  v+o = 10,  v = 8,  m = 2,  l = 2
+Number of variables : 10.98 vs Number of equations: 10.57 
+Hypothesis 1 (Ray's l-scaled formula): 9.55
+
+[params]  v+o = 10,  v = 7,  m = 2,  l = 2
+Number of variables : 13.81 vs Number of equations: 15.11 
+Hypothesis 1 (Ray's l-scaled formula): 13.95
+
+[params]  v+o = 10,  v = 7,  m = 3,  l = 2
+Number of variables : 13.81 vs Number of equations: 15.70 
+Hypothesis 1 (Ray's l-scaled formula): 14.47
+
+Total time: 0.010 seconds, Total memory usage: 32.09MB
+Magma V2.28-23    Wed Jul 23 2025 15:23:34 on wf123    [Seed = 751085058]
+Type ? for help.  Type <Ctrl>-D to quit.
+
+Loading file "params.mag"
+
+[params]  v+o = 54,  v = 37,  m = 17,  l = 2
+Number of variables : 90.84 vs Number of equations: 96.11 
+Number of equations (Ray's l-scaled formula): 95.11
+
+[params]  v+o = 33,  v = 25,  m = 8,  l = 3
+Number of variables : 71.18 vs Number of equations: 76.42 
+Number of equations (Ray's l-scaled formula): 74.83
+
+[params]  v+o = 29,  v = 24,  m = 5,  l = 4
+Number of variables : 67.43 vs Number of equations: 72.29 
+Number of equations (Ray's l-scaled formula): 70.29
+
+[params]  v+o = 81,  v = 56,  m = 25,  l = 2
+Number of variables : 137.67 vs Number of equations: 143.46 
+Number of equations (Ray's l-scaled formula): 142.46
+
+[params]  v+o = 60,  v = 49,  m = 11,  l = 3
+Number of variables : 114.95 vs Number of equations: 119.72 
+Number of equations (Ray's l-scaled formula): 118.13
+
+[params]  v+o = 45,  v = 37,  m = 8,  l = 4
+Number of variables : 110.73 vs Number of equations: 116.47 
+Number of equations (Ray's l-scaled formula): 114.47
+
+[params]  v+o = 29,  v = 24,  m = 5,  l = 5
+Number of variables : 84.29 vs Number of equations: 90.40 
+Number of equations (Ray's l-scaled formula): 88.08
+
+[params]  v+o = 108,  v = 75,  m = 33,  l = 2
+Number of variables : 184.62 vs Number of equations: 190.81 
+Number of equations (Ray's l-scaled formula): 189.81
+
+[params]  v+o = 81,  v = 66,  m = 15,  l = 3
+Number of variables : 158.56 vs Number of equations: 163.85 
+Number of equations (Ray's l-scaled formula): 162.26
+
+[params]  v+o = 70,  v = 60,  m = 10,  l = 4
+Number of variables : 154.12 vs Number of equations: 159.48 
+Number of equations (Ray's l-scaled formula): 157.48
+
+[params]  v+o = 14,  v = 9,  m = 5,  l = 2
+Number of variables : 21.93 vs Number of equations: 25.55 
+Number of equations (Ray's l-scaled formula): 24.55
+
+[params]  v+o = 12,  v = 8,  m = 4,  l = 2
+Number of variables : 17.90 vs Number of equations: 20.80 
+Number of equations (Ray's l-scaled formula): 19.80
+
+[params]  v+o = 10,  v = 8,  m = 2,  l = 2
+Number of variables : 10.98 vs Number of equations: 10.57 
+Number of equations (Ray's l-scaled formula): 9.57
+
+[params]  v+o = 9,  v = 7,  m = 2,  l = 2
+Number of variables : 10.34 vs Number of equations: 10.26 
+Number of equations (Ray's l-scaled formula): 9.26
+
+Total time: 0.880 seconds, Total memory usage: 32.09MB
