@@ -4,10 +4,12 @@ SetColumns(0);
 //  SNOVA – wedge experiment      
 ////////////////////////////////////////////////////////////////////////
 procedure SnovaExperiment(n, v, m, l)
-    //////////////// ❶ PARAMETERS //////////////////////////////////////////////////
-    q  := 16;
+    /////////////////////////////////////////////////////////////////// 
+    // ❶ PARAMETERS 
+    //////////////////////////////////////////////////////////////////
+    q  := 256;
     Ln := n*l;  
-    F  := GF(q);
+    F<j>  := GF(q);
     o  := n - v;        // “oil” dimension
     printf "[params]  v+o = %o,  v = %o,  m = %o,  l = %o\n", n, v, m, l;
 
@@ -84,13 +86,8 @@ procedure SnovaExperiment(n, v, m, l)
     ////////////////////////////////////////////////////////////////////////
     // ❸  RANDOM ELEMENT  F_q[S]  (ℓ×ℓ matrix over F)
     ////////////////////////////////////////////////////////////////////////
-    RandFqS := function()
-        return &+[ Random(F) * S^(i-1) : i in [1..l] ];
-    end function;
-
-    ////////////////////////////////////////////////////////////////////////
-    // ❹  POLYNOMIAL RING  R ≅ F[x_{r,i,j}]  
-    ////////////////////////////////////////////////////////////////////////
+    RandFqS   := func< |
+        &+[ Random(F) * S^(i-1) : i in [1..l] ] >;
     // -----  build  R = F[x_0, …, x_{Nvars-1}] ----- //
     Nvars := v*n*l;
     R     := PolynomialRing(K, Nvars);
@@ -98,7 +95,7 @@ procedure SnovaExperiment(n, v, m, l)
                 : r in [0..v-1], i in [0..n-1], j in [0..l-1] ];
     AssignNames(~R, names);
 
-    // helper to map (r,i,j) → generator index (Magma is 1‑based)
+    // helper to map (r,i,j) → generator index 
     Idx := function(r,i,j) return r*n*l + i*l + j + 1; end function;
     Var := function(r,i,j) return R.(Idx(r,i,j)); end function;
 
@@ -124,9 +121,6 @@ procedure SnovaExperiment(n, v, m, l)
 
     function SnovaPublicMatrices(n, v, m, l, S)
         o := n - v;
-        //---------- F_q[S] ----------
-        RandFqS   := func< |
-            &+[ Random(F) * S^(i-1) : i in [1..l] ] >;
 
         //---------- SNOVA permutation matrices z(S^j) ----------------------
         Lambda := function(Q)
@@ -163,60 +157,23 @@ procedure SnovaExperiment(n, v, m, l)
         Row2 := HorizontalJoin(Zvo, Io);
         T    := VerticalJoin(Row1, Row2);
 
-        //---------- 3. final public skew‑sym. forms ------------------------
-        Plist := [ Transpose(T) * Fmat * T : Fmat in Flist ];
+        //---------- 3. final public skew‑sym. forms - scaling by S^i ----------
+        Plist := [ T * Fmat * Transpose(T) : Fmat in Flist ];
         Qlist := [];
         for P in Plist do
-            SymP := P + Transpose(P);
-            for Lj in LambdaS do
-                for Lk in LambdaS do
-                    Append(~Qlist, Lj * SymP * Lk);
-                end for;
-            end for;
+            // for Lj in LambdaS do
+            //     for Lk in LambdaS do
+                    // Append(~Qlist,  Lj * P * Lk + Lk * Transpose(P) * Lj); // With S
+                    Append(~Qlist,  P + Transpose(P)); // Specific for raw public keys no S
+            //     end for;
+            // end for;
         end for;
 
         return Qlist;
     end function;
 
-    function SnovaPublicMatrices_naive(n, v, m, l, S)
-        o := n - v;
-        //---------- F_q[S] ----------
-        RandFqS   := func< |
-            &+[ Random(F) * S^(i-1) : i in [1..l] ] >;
-
-        //---------- 1. central matrix F with zero oil–oil block ------------
-        RandF := function()
-            F11 := RandomMatrix(F,v*l,v*l);
-            F12 := RandomMatrix(F,v*l,o*l);
-            F21 := RandomMatrix(F,o*l,v*l);
-            ZZ  := ZeroMatrix(F, o*l, o*l);
-
-            Row1 := HorizontalJoin(F11, F12);
-            Row2 := HorizontalJoin(F21, ZZ);
-            return VerticalJoin(Row1, Row2);
-        end function;
-
-        Flist := [ RandF() : k in [1..m*l*l] ];
-
-        //---------- 2. upper‑triangular hiding matrix  T -------------------
-        Tvo := BlockMatrix(v, o, [ RandFqS() : k in [1..v*o] ]);
-        Iv  := IdentityMatrix(F, v*l);
-        Io  := IdentityMatrix(F, o*l);
-        Zvo := ZeroMatrix(F, o*l, v*l);
-
-        Row1 := HorizontalJoin(Iv,  Tvo);
-        Row2 := HorizontalJoin(Zvo, Io);
-        T    := VerticalJoin(Row1, Row2);
-
-        //---------- 3. final public skew‑sym. forms ------------------------
-        Qlist := [ Transpose(T) * (Fmat + Transpose(Fmat)) * T : Fmat in Flist ];
-
-        return Qlist;
-    end function;
-
     Q_original := SnovaPublicMatrices(n,v,m,l,S);
-    Qlist := [ Un * Q * UnInversed: Q in Q_original ];
-    // Qlist := SnovaPublicMatrices_naive(n,v,m,l,S);
+    Qlist := [ Un * Q * UnInversed: Q in Q_original ]; // Change of basis Un applied to Q
 
     ////////////////////////////////////////////////////////////////////////
     //  ❻  vl×vl  MINORS  OF  X
@@ -225,7 +182,7 @@ procedure SnovaExperiment(n, v, m, l)
     rowsC := [1..vl];
 
     function Minor(I)                       // I = *sequence* of col‑indices
-        cols := [ i+1 : i in I ];           // → 1‑based
+        cols := [ i+1 : i in I ];           
         return Determinant( Submatrix(X, rowsC, cols) );
     end function;
 
@@ -314,14 +271,38 @@ procedure SnovaExperiment(n, v, m, l)
         end if;
     end for;
 
-    rankM := Rank(M);   
+    rankM := Rank(M); 
+
+    ////////////////////////////////////////////////////////////////////////
+    //  ❾  OTHER FUNCTIONS
+    ////////////////////////////////////////////////////////////////////////
+    
+    //----------------------------------------------------------------------
+    // ColorMatrix: print a matrix with ■ for non‑zero and □ for zero
+    //----------------------------------------------------------------------
+
+    procedure ColorMatrix(M)
+        // Get dimensions
+        n := Nrows(M);
+        m := Ncols(M);
+        
+        // Loop over rows
+        for i in [1..n] do
+            rowStr := "";                    // start with empty string
+            for j in [1..m] do
+                if M[i][j] eq 0 then
+                    rowStr cat:= "□ ";      // empty square for zero
+                else
+                    rowStr cat:= "■ ";      // filled square for non‑zero
+                end if;
+            end for;
+            // trim trailing space and print
+            print &cat([ rowStr[k] : k in [1..#rowStr-1] ]);  
+        end for;
+    end procedure;
 
     // Counting actual nonzero rows in M
     nonzerorows := #[ r : r in [1..Nrows(M)] | exists{ j : j in [1..Ncols(M)] | M[r,j] ne 0 } ];
-
-    // Counting actual nonzero cols in M
-    // nonzerocols := #[ r : r in [1..Nrows(Transpose(M))] | exists{ j : j in [1..Ncols(Transpose(M))] | Transpose(M)[r,j] ne 0 } ];
-    nonzerocols := "NA";
 
     // ---------- computing expected formula for number of nonzero rows -----------------
     Bin  := Binomial;
@@ -344,7 +325,8 @@ procedure SnovaExperiment(n, v, m, l)
     end function;
 
     function expected_non_zero_rows(m,v,o,l)
-        coeff := m*l*l;
+        // coeff := m*l*l; // For S-scaled params
+        coeff := m;
         inner := 0;
         for vec in NonNegVectors(2, l) do 
             inner +:= Prod([ Bin(v+o, v+aj) : aj in vec ]);
@@ -356,22 +338,18 @@ procedure SnovaExperiment(n, v, m, l)
     // Number of duplicated rows
     numrowsDuplicates := Nrows(M)
                - #SequenceToSet([ M[i] : i in [1..Nrows(M)] ]);
-    // // Number of duplicated cols
-    // numcolsDuplicates := Nrows(Transpose(M))
-    //            - #SequenceToSet([ Transpose(M)[i] : i in [1..Nrows(Transpose(M))] ]);
-    numcolsDuplicates := "NA";
 
-    printf "Rank(M) = %o  (size %o × %o); non-zero rows = %o (expected = %o), non-zero cols = %o; duplicated rows = %o, duplicated cols = %o \n", 
-        rankM, Nrows(M), Ncols(M), nonzerorows, expectednonzerorows, nonzerocols, numrowsDuplicates, numcolsDuplicates;
+    printf "\nRank(M) = %o  (non-zero minors i.e. variables = %o; size of M = %o × %o); \nNon-zero rows = %o (expected = %o); duplicated rows = %o \n", 
+        rankM, nonzero, Nrows(M), Ncols(M), nonzerorows, expectednonzerorows, numrowsDuplicates;
     ////////////////////////////////////////////////////////////////////////
-    //  ❾  COMBINATORIAL SUMS  (Hypotheses 1–4)
+    //  ❿  COMBINATORIAL SUMS CHECKS  (Hypotheses 1–4)
     ////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////// Hyp 1
+    ///////////////////////////////////////////////////////////////// Hyp 1
     function Hyp1(m,v,o,l)
         sum := 0;
         out  := [];
-        up   := Floor(o*l/2) + 1;
+        up   := Floor(o*l/2);
         for i in [1..up] do
             coeff := (-1)^i * Bin(m*l + i - 1, i);
             inner := 0;
@@ -384,11 +362,11 @@ procedure SnovaExperiment(n, v, m, l)
         return out;
     end function;
 
-    ///////////////////////////////////////////////////////////////// Hyp 2
+    ///////////////////////////////////////////////////////////////// Hyp 2
     function Hyp2(m,v,o,l)
         sum := 0;
         out  := [];
-        up   := Floor(o*l/2) + 1;
+        up   := Floor(o*l/2);
         for i in [1..up] do
             coeff := (-1)^i * Bin(m + i - 1, i);
             inner := 0;
@@ -401,7 +379,7 @@ procedure SnovaExperiment(n, v, m, l)
         return out;
     end function;
 
-    ///////////////////////////////////////////////////////////////// Hyp 3
+    ///////////////////////////////////////////////////////////////// Hyp 3
     function Hyp3(m,v,o,l)
         return [ Binomial(l*n, v) -
                 &+[ (-1)^i * Bin(m*l*l + i - 1, i) * Bin(v+o, v+2*i)
@@ -409,11 +387,13 @@ procedure SnovaExperiment(n, v, m, l)
             : t in [0..Floor(o/2)] ];
     end function;
 
-    printf "Hypothesis 1 (Ray's l-scaled formula): %o\n", Hyp1(m,v,o,l);
+    printf "\nHypothesis 1 (Ray's l-scaled formula): %o\n", Hyp1(m,v,o,l)[#Hyp1(m,v,o,l)][2];
 
-    printf "Hypothesis 2 (Ray's no-l formula): %o\n", Hyp2(m,v,o,l);
+    printf "Hypothesis 2 (Ray's no-l formula): %o\n", Hyp2(m,v,o,l)[#Hyp2(m,v,o,l)][2];
 
-    printf "Hypothesis 3 (plain UOV formula): %o\n", Hyp3(m, l*v, l*o, l);
+    printf "Hypothesis 3 (plain UOV formula): %o\n", Hyp3(m, l*v, l*o, l)[#Hyp3(m, l*v, l*o, l)];
+
+    print "\n";
 
     ////////////////////////////////////////////////////////////////////////
     //               ———   END   ——————————————————————————————
@@ -422,10 +402,13 @@ end procedure;
 
 // Parameter sets
 ParameterSets := [
-    <11, 6, 5, 1>,
-    <10, 7, 4, 1>,
-    <10, 7, 5, 1>,
-];
+                    <4, 2, 2, 2>,
+                    <7, 5, 2, 2>,
+                    <7, 4, 3, 2>,
+                    <8, 5, 2, 2>,
+                    <5, 2, 2, 3>, 
+                    <6, 3, 2, 3>
+                ];
 
 // Loop through each set
 for ps in ParameterSets do
